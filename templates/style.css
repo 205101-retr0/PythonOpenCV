@@ -1,0 +1,24 @@
+body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.containter{
+    width: 100%;
+    height: 100%;
+    color: red;
+}
+
+.c-elem{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    margin: 2em;
+}
+
+input{
+    text-align: center;
+}
