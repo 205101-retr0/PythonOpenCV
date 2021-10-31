@@ -6,4 +6,3 @@ class Secret:
 
         with open('secret.txt', 'wb') as f:
             f.write(secret)
-        

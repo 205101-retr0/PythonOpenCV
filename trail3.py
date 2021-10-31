@@ -50,16 +50,20 @@ def verify():
     token = request.cookies.get('token')
     if token:
         v = verify(token)
+        print("works1")
         resp = make_response(render_template("index.html", testing=v))
+        print("works2")
     else:
         return "No token"
     
     resp.set_cookie('token', token)
+    print("works3")
     return resp
 
 
 def verify(token: str) -> str:
     token_split = token.split('.')[1].encode()
+    print("works4")
     token_split = pad(token_split)
     token_payload = base64.b64decode(token_split).decode()
     token_payload = json.loads(token_payload)
