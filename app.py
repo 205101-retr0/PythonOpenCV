@@ -1,6 +1,10 @@
 from flask import Flask, render_template, make_response, request, redirect
-import requests, jwt, json, base64, sys
+import requests, jwt, json, base64, os
 from secret import Secret
+from dotenv import load_dotenv
+
+load_dotenv()
+FLAG = os.environ.get("FLAG")
 
 app = Flask(__name__)
 
@@ -20,11 +24,11 @@ def pad(data):
 
 @app.route('/')
 def index():
-    return render_template('index.html', testing="HIT THIS TO GET TOKEN...")
+    return render_template('index.html', output="HIT THIS TO GET TOKEN...")
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/generateToken', methods=['GET', 'POST'])
+def generateToken():
     user = request.form['username']
     
     if user:
@@ -33,13 +37,13 @@ def login():
             payload['kid']).text, algorithm='HS256')
 
         resp = make_response(render_template(
-            "index.html", testing=encoded_jwt))
+            "index.html", output=encoded_jwt))
 
     else:
         # passing guest user as default user
         encoded_jwt = jwt.encode(payload, requests.get(
             payload['kid']).text, algorithm='HS256') 
-        resp = make_response(render_template("index.html", testing=encoded_jwt))
+        resp = make_response(render_template("index.html", output=encoded_jwt))
 
     resp.set_cookie('token', encoded_jwt)
     return resp
@@ -49,10 +53,15 @@ def login():
 def verify():
     token = request.cookies.get('token')
     if token:
-        v = verify(token)
-        resp = make_response(render_template("index.html", testing=v))
+        val = verify(token)
+        if val == "SIG_FAIL":
+            resp = make_response(render_template("home"), result = "Signature Verification Failure")
+        elif val == "N_ADMIN":
+            resp = make_response(render_template("home"), result="No Admin Capabilities Found")
+        elif val == "ALL_CHECKS_PASSED":
+            resp = make_response(render_template("home"), result=FLAG)
     else:
-        return "No token"
+        resp = make_response(render_template("home"), result="No Token Was Set!")
     
     resp.set_cookie('token', token)
     return resp
@@ -73,9 +82,9 @@ def verify(token: str) -> str:
         return "SIG_FAIL"
     
     if dcoded_token['admin_cap'] == 'false':
-        return "Not admin"
+        return "N_ADMIN"
     else:
-        return "flag"
+        return "ALL_CHECKS_PASSED"
 
 
 if __name__ == '__main__':
