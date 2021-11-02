@@ -42,3 +42,13 @@ button {
     border: 2px solid red;
     border-radius: 10px;
 }
+
+code {
+    color: lightgreen;
+    padding: 10px;
+    margin: 25px;
+    margin-top: 50px;
+    text-align: justify;
+    border: 2px solid red;
+    border-radius: 10px;
+}
