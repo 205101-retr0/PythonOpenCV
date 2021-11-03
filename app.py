@@ -29,6 +29,11 @@ def index():
 
 @app.route('/generateToken', methods=['GET', 'POST'])
 def generateToken():
+    
+    if request.method == "GET":
+        resp = make_response(render_template("admin.html", result="That's Illegal!"))
+        return resp
+    
     user = request.form['username']
     
     if user:
@@ -51,17 +56,22 @@ def generateToken():
 
 @app.route('/verify', methods=['GET', 'POST'])
 def verify():
+    
+    if request.method == "GET":
+        resp = make_response(render_template("admin.html", result="That's Illegal Too!"))
+        return resp
+    
     token = request.cookies.get('token')
     if token:
         val = verify(token)
         if val == "SIG_FAIL":
-            resp = make_response(render_template("home"), result = "Signature Verification Failure")
+            resp = make_response(render_template("admin.html", result = "Signature Verification Failure"))
         elif val == "N_ADMIN":
-            resp = make_response(render_template("home"), result="No Admin Capabilities Found")
+            resp = make_response(render_template("admin.html", result="No Admin Capabilities Found"))
         elif val == "ALL_CHECKS_PASSED":
-            resp = make_response(render_template("home"), result=FLAG)
+            resp = make_response(render_template("admin.html", result=FLAG))
     else:
-        resp = make_response(render_template("home"), result="No Token Was Set!")
+        resp = make_response(render_template("admin.html", result="No Token Was Set!"))
     
     resp.set_cookie('token', token)
     return resp
