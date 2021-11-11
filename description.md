@@ -13,3 +13,6 @@ Making a public and private key on our own server and redirecting a private key 
 \
 So, we can veriy and sign our own JWT token.\
 Basically we take the ctf ka server out of the equation for token generation.
+
+## Chall Desp:
+Jason likes cookies. 
